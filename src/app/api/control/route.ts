@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getClassLocked, setClassLocked } from "@/lib/server-helpers";
+import { getClassLocked, guruAuthorized, setClassLocked } from "@/lib/server-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +10,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!guruAuthorized(req)) {
+    return NextResponse.json({ ok: false, error: "PIN diperlukan" }, { status: 401 });
+  }
   try {
     const b = await req.json();
     const isLocked = !!b.isLocked;

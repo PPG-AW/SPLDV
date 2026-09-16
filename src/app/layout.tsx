@@ -24,14 +24,27 @@ export const metadata: Metadata = {
   title: "KARTESIA — Media Pembelajaran SPLDV",
   description:
     "Platform belajar matematika diferensiasi (TaRL) model TAI & Tutor Sebaya — SPLDV Metode Eliminasi & Substitusi, Fase E Kelas X.",
+  applicationName: "KARTESIA",
+  manifest: "/manifest.webmanifest",
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    icon: "/kartesia-icon.svg",
+    apple: "/kartesia-icon.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "KARTESIA",
+  },
 };
 
 export const viewport: Viewport = {
   themeColor: "#18181b",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

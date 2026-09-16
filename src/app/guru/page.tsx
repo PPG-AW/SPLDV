@@ -71,10 +71,26 @@ export default function GuruPage() {
   const [caseHints, setCaseHints] = useState(0);
   const [showKey, setShowKey] = useState(false);
   const [lastSync, setLastSync] = useState<Date | null>(null);
+  const [needPin, setNeedPin] = useState(false);
+  const [pinInput, setPinInput] = useState("");
+
+  const gfetch = (url: string, init?: RequestInit) =>
+    fetch(url, {
+      ...init,
+      headers: {
+        ...(init?.headers ?? {}),
+        "x-guru-pin": localStorage.getItem("kartesia:guru-pin") ?? "",
+      },
+    });
 
   const load = async () => {
     try {
-      const res = await fetch("/api/dashboard");
+      const res = await gfetch("/api/dashboard");
+      if (res.status === 401) {
+        setNeedPin(true);
+        return;
+      }
+      setNeedPin(false);
       const d = await res.json();
       if (d.ok) {
         setData(d);
@@ -116,11 +132,62 @@ export default function GuruPage() {
 
   const maxDist = Math.max(1, ...(data?.dist.map((d) => d.count) ?? [1]));
 
+  if (needPin) {
+    return (
+      <main className="paper-grid grid min-h-dvh place-items-center px-5">
+        <div className="w-full max-w-sm rounded-3xl border border-zinc-900 bg-white p-6 shadow-[0_3px_0_0_rgba(24,24,27,1)]">
+          <div className="grid size-11 place-items-center rounded-2xl bg-zinc-900 text-white">
+            <Lock className="size-5" strokeWidth={2.2} />
+          </div>
+          <h1 className="mt-4 font-display text-xl font-bold tracking-tight">PIN Guru</h1>
+          <p className="mt-1 text-[12.5px] leading-relaxed text-zinc-600">
+            Dasbor ini dilindungi PIN. Masukkan PIN yang diatur pada variabel lingkungan
+            <span className="font-mono text-[11px]"> GURU_PIN</span> di server.
+          </p>
+          <input
+            value={pinInput}
+            onChange={(e) => setPinInput(e.target.value.replace(/[^0-9A-Za-z-]/g, ""))}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && pinInput) {
+                localStorage.setItem("kartesia:guru-pin", pinInput);
+                setNeedPin(false);
+                void load();
+              }
+            }}
+            inputMode="numeric"
+            placeholder="Masukkan PIN"
+            className="mt-4 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-4 py-3 text-center font-mono text-lg font-bold tracking-[0.3em] outline-none focus:border-zinc-900 focus:bg-white"
+          />
+          <button
+            onClick={() => {
+              if (!pinInput) return;
+              localStorage.setItem("kartesia:guru-pin", pinInput);
+              setNeedPin(false);
+              void load();
+            }}
+            className="mt-3 w-full rounded-2xl bg-zinc-900 py-3.5 text-sm font-bold text-white active:scale-[0.98]"
+          >
+            BUKA DASBOR
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("kartesia:guru-pin");
+              setPinInput("");
+            }}
+            className="mt-2 w-full py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400 hover:text-zinc-900"
+          >
+            Hapus PIN tersimpan
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-dvh bg-zinc-50 pb-16">
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-zinc-50/90 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+        <div className="safe-top mx-auto flex max-w-5xl items-center justify-between px-4 pb-3">
           <div className="flex items-center gap-3">
             <a
               href="/"

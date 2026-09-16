@@ -1,13 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { activityLogs, students, tutorAlerts } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
-import { getClassLocked } from "@/lib/server-helpers";
+import { getClassLocked, guruAuthorized } from "@/lib/server-helpers";
 import { LEVELS } from "@/lib/levels";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!guruAuthorized(req)) {
+    return NextResponse.json({ ok: false, error: "PIN diperlukan" }, { status: 401 });
+  }
   const isLocked = await getClassLocked();
 
   const allStudents = await db

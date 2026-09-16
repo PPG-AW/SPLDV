@@ -111,7 +111,7 @@ export default function LandingPage() {
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submit()}
               placeholder="cth. Budi Santoso"
-              className="mt-1.5 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm font-medium outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white"
+              className="mt-1.5 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-4 py-3 text-base font-medium outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white"
             />
           </label>
           <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">

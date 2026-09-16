@@ -7,11 +7,21 @@ export function toKey(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
+/** Proteksi dasbor guru. Aktif hanya jika env GURU_PIN diatur. */
+export function guruAuthorized(req: Request): boolean {
+  const pin = process.env.GURU_PIN;
+  if (!pin) return true; // tanpa PIN → terbuka (mode lokal/demo)
+  return req.headers.get("x-guru-pin") === pin;
+}
+
 export function isAdminName(name: string): boolean {
   return toKey(name) === "admin";
 }
 
+import { ensureTables } from "@/db";
+
 export async function getClassLocked(): Promise<boolean> {
+  await ensureTables();
   const rows = await db.select().from(classState).limit(1);
   if (rows.length === 0) {
     await db.insert(classState).values({ isLocked: false });

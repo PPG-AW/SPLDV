@@ -89,16 +89,27 @@ export default function BelajarPage() {
       router.replace("/");
       return;
     }
-    const s = JSON.parse(raw) as SessionInfo;
-    setSession(s);
+    const saved = JSON.parse(raw) as Partial<SessionInfo>;
+    if (!saved.name) {
+      localStorage.removeItem("kartesia:session");
+      router.replace("/");
+      return;
+    }
     fetch("/api/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(s),
+      body: JSON.stringify({ name: saved.name }),
     })
       .then((r) => r.json())
       .then((d) => {
         const st = d.student;
+        const normalizedSession: SessionInfo = {
+          studentKey: st.studentKey,
+          name: st.name,
+          isAdmin: !!d.isAdmin,
+        };
+        setSession(normalizedSession);
+        localStorage.setItem("kartesia:session", JSON.stringify(normalizedSession));
         const adminMode = !!d.isAdmin;
         const lv = adminMode ? 1 : Math.min(Math.max(st.level ?? 1, 1), TOTAL_LEVELS);
         const p: Prog = {
@@ -450,7 +461,7 @@ export default function BelajarPage() {
       </section>
 
       {/* ── Isi ── */}
-      <section className="flex-1 space-y-3.5 px-4 py-4 pb-40">
+      <section className="flex-1 space-y-3.5 px-3 py-4 pb-40 min-[390px]:px-4">
         {review && q ? (
           <ReviewPanel q={q} onNext={lanjut} tuntas={prog.tuntas} />
         ) : prog.tuntas ? (

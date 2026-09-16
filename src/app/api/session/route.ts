@@ -7,8 +7,11 @@ import { isAdminName, toKey } from "@/lib/server-helpers";
 export const dynamic = "force-dynamic";
 
 // Masuk kelas — identitas cukup NAMA
+import { ensureTables } from "@/db";
+
 export async function POST(req: NextRequest) {
   try {
+    await ensureTables();
     const body = await req.json();
     const name = String(body.name ?? "")
       .trim()

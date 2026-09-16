@@ -34,11 +34,59 @@
 
 html {
   -webkit-tap-highlight-color: transparent;
+  min-width: 320px;
+  overflow-x: hidden;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
+  min-width: 320px;
+  overflow-x: hidden;
   background-color: #fafafa;
   color: #18181b;
+}
+
+/* Rumus: gunakan semua lebar, lalu geser hanya bila benar-benar diperlukan. */
+.math-scroll {
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #a1a1aa transparent;
+}
+
+.math-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.math-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #a1a1aa;
+}
+
+.math-scroll:focus-visible {
+  border-radius: 0.5rem;
+  outline: 2px solid #18181b;
+  outline-offset: 2px;
+}
+
+/* Safe area untuk iPhone berponi dan home indicator. */
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.safe-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+/* Safari iOS melakukan zoom jika ukuran font input kurang dari 16px. */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 ::selection {
