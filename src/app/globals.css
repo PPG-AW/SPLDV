@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-sans-var), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-var), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-var), ui-monospace, SFMono-Regular, monospace;
+  --animate-pulse-ring: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  --animate-blink-dot: blink-dot 1s steps(2, start) infinite;
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.92);
+      opacity: 0.55;
+    }
+    70% {
+      transform: scale(1.35);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1.35);
+      opacity: 0;
+    }
+  }
+  @keyframes blink-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.25;
+    }
+  }
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: #fafafa;
+  color: #18181b;
+}
+
+::selection {
+  background: #18181b;
+  color: #ffffff;
+}
+
+/* tekstur kertas milimeter — grid cartesius samar */
+.paper-grid {
+  background-image: linear-gradient(to right, rgba(24, 24, 27, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(24, 24, 27, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.paper-grid-bold {
+  background-image: linear-gradient(to right, rgba(24, 24, 27, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(24, 24, 27, 0.09) 1px, transparent 1px);
+  background-size: 140px 140px;
+}
+
+/* dot jendela evaluasi: salah = arsir diagonal */
+.dot-wrong {
+  background-image: repeating-linear-gradient(
+    45deg,
+    #18181b 0px,
+    #18181b 2px,
+    transparent 2px,
+    transparent 5px
+  );
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* input angka tanpa spinner */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
